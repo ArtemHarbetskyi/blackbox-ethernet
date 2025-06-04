@@ -27,6 +27,7 @@ AllowedIPs = 10.16.0.2/32
 EOF
 
 echo "[A] Увімкнення IP forwarding..."
+echo 1 | sudo tee /proc/sys/net/ipv4/ip_forward
 echo 'net.ipv4.ip_forward=1' | sudo tee -a /etc/sysctl.conf
 sudo sysctl -p
 
