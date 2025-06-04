@@ -34,6 +34,7 @@ sudo wg-quick up wg0
 
 echo "[B] Включення IP forwarding..."
 echo 1 | sudo tee /proc/sys/net/ipv4/ip_forward
+sudo sysctl -w net.ipv4.ip_forward=1
 
 echo "[B] Налаштування NAT через wg0..."
 sudo iptables -t nat -A POSTROUTING -s 192.168.88.0/24 -o wg0 -j MASQUERADE
@@ -51,5 +52,17 @@ echo "[B] Налаштування eth0 з IP 192.168.88.1/24"
 sudo ip addr flush dev eth0
 sudo ip addr add 192.168.88.1/24 dev eth0
 sudo ip link set eth0 up
+
+# Встановити iptables-persistent (без інтерфейсу)
+echo "[INFO] Встановлюю iptables-persistent..."
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y iptables-persistent
+
+# Зберегти поточні правила
+echo "[INFO] Зберігаю iptables правила..."
+sudo netfilter-persistent save
+
+echo "[DONE] Готово. Правила збережено і будуть застосовані після перезавантаження."
+
+
 
 echo "[B] Готово ✅ — Підключіть клієнт до Ethernet!"
